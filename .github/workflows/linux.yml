@@ -9,6 +9,6 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
-    - name: test AnyCodable package
       uses: docker://swift:latest
+    - name: test AnyCodable package
       run: swift test
