@@ -3,14 +3,29 @@ name: Linux CI
 on: [push]
 
 jobs:
-  build:
-
-    runs-on: ubuntu-18.04
-    
+  generateLinuxMain:
+    runs-on: macOS-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-      - name: Docker
-        uses: docker://swift:latest
+      - uses: actions/checkout@v1
+      - name: Install sourcery
+        run: brew install sourcery
+      - name: Generate LinuxMain.swift
+        run: sourcery
+      - name: Upload LinuxMain.swift
+        uses: actions/upload-artifact@v1
+        with:
+          name: linux-main
+          path: LinuxMain.swift
+  test:
+    runs-on: ubuntu-18.04
+    container: swift:latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Download LinuxMain.swift
+        uses: actions/download-artifact@v1
+        with:
+          name: linux-main
+          path: .
+      - name: Test
         run: swift test
         
